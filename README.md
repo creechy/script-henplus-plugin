@@ -41,3 +41,8 @@ create a script like
       _henplus.msg().println("Enabling auto-commit.");
       _dispatcher.execute("set-session-property auto-commit true");
     };
+
+###References###
+
+* [MVEL Syntax Reference - Site 1](http://mvel.documentnode.com/#basic-syntax)
+* [MVEL Syntax Reference - Site 2](https://github.com/imona/tutorial/wiki/MVEL-Guide)
