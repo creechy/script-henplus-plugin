@@ -38,6 +38,7 @@ public final class ScriptCommand extends AbstractCommand {
 
                 Map<String, Object> variables = new HashMap<String, Object>();
                 variables.put("_henplus", HenPlus.getInstance());
+                variables.put("_dispatcher", HenPlus.getInstance().getDispatcher());
                 variables.put("_session", currentSession);
                 variables.put("_command", command);
                 variables.put("_result", result);
@@ -94,6 +95,7 @@ public final class ScriptCommand extends AbstractCommand {
             } else {
                 Map<String, Object> variables = new HashMap<String, Object>();
                 variables.put("_henplus", HenPlus.getInstance());
+                variables.put("_dispatcher", HenPlus.getInstance().getDispatcher());
                 variables.put("_session", HenPlus.getInstance().getCurrentSession());
 
                 parameters = parameters.trim();
