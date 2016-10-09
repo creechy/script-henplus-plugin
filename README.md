@@ -16,13 +16,14 @@ Start `henplus` and register the plugin. Use the `plug-in` command for this. Thi
 
 When enabled, you can manually execute scripts with the `script` command.
 
-    script <script-name>
+    script <script-name> [<argument-list]
 
 There will be two predefined variables from HenPlus you can access
 
     _session    - the current SQL session
     _henplus    - the HenPlus instance
     _dispatcher - the HenPlus command dispatcher
+    _msg        - the HenPlus message printer
 
 
 You can also create a script called `script.mvel` in `$HOME/.henplus` that will be executed  after each command is completed. There
@@ -33,12 +34,14 @@ will be several predefined variables
     _session    - the current SQL session
     _henplus    - the HenPlus instance
     _dispatcher - the HenPlus command dispatcher
+    _msg        - the HenPlus message printer
+    _args       - the argument list passed to the script
 
 So for example if you want to automatically do something after connections are made, like enabling auto-commit, you can
 create a script like
 
     if (_command.startsWith("connect") && _result == 0) {
-      _henplus.msg().println("Enabling auto-commit.");
+      _msg.println("Enabling auto-commit.");
       _dispatcher.execute("set-session-property auto-commit true");
     };
 

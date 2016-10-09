@@ -9,14 +9,15 @@ import henplus.event.ExecutionListener;
 import org.mvel2.MVEL;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FilenameFilter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 public final class ScriptCommand extends AbstractCommand {
 
-    private static final String COMMAND_PROMPT = "script";
+    private static final String COMMAND_SCRIPT = "script";
+    private static final String COMMAND_LIST = "list-scripts";
 
     /**
      *
@@ -39,6 +40,7 @@ public final class ScriptCommand extends AbstractCommand {
                 Map<String, Object> variables = new HashMap<String, Object>();
                 variables.put("_henplus", HenPlus.getInstance());
                 variables.put("_dispatcher", HenPlus.getInstance().getDispatcher());
+                variables.put("_msg", HenPlus.msg());
                 variables.put("_session", currentSession);
                 variables.put("_command", command);
                 variables.put("_result", result);
@@ -61,7 +63,7 @@ public final class ScriptCommand extends AbstractCommand {
      */
     @Override
     public String[] getCommandList() {
-        return new String[]{COMMAND_PROMPT};
+        return new String[]{COMMAND_SCRIPT, COMMAND_LIST};
     }
 
     /*
@@ -82,25 +84,36 @@ public final class ScriptCommand extends AbstractCommand {
     public int execute(SQLSession session, String command, String parameters) {
         int result = SUCCESS;
 
-        // required: session
-        if (session == null) {
-            HenPlus.msg().println("You need a valid session for this command.");
-            return EXEC_FAILED;
-        }
+        if (command.equals(COMMAND_SCRIPT)) {
+            // required: session
+            if (session == null) {
+                HenPlus.msg().println("You need a valid session for this command.");
+                return EXEC_FAILED;
+            }
 
-        if (command.equals(COMMAND_PROMPT)) {
             if (parameters == null || parameters.isEmpty()) {
                 HenPlus.msg().println("You need to supply a file to execute");
                 return EXEC_FAILED;
             } else {
+                parameters = parameters.trim();
+
+                List<String> parameterList = ScriptUtil.parseTokens(parameters);
+                String script = parameterList.get(0);
+                List<String> arguments = parameterList.subList(1, parameterList.size());
+
                 Map<String, Object> variables = new HashMap<String, Object>();
                 variables.put("_henplus", HenPlus.getInstance());
                 variables.put("_dispatcher", HenPlus.getInstance().getDispatcher());
+                variables.put("_msg", HenPlus.msg());
                 variables.put("_session", HenPlus.getInstance().getCurrentSession());
+                variables.put("_args", arguments);
 
-                parameters = parameters.trim();
 
-                File file = new File(parameters);
+                File file = new File(script);
+                if (!file.exists()) {
+                    file = new File(HenPlus.getInstance().getConfigurationDirectoryInfo(), script);
+                }
+
                 if (file.exists()) {
                     try {
                         MVEL.evalFile(file, variables);
@@ -108,9 +121,20 @@ public final class ScriptCommand extends AbstractCommand {
                         e.printStackTrace();
                     }
                 } else {
-                    HenPlus.msg().println("Script file \"" + parameters + "\"doesn't exist");
+                    HenPlus.msg().println("Script file \"" + script + "\" doesn't exist");
                 }
-
+            }
+        }
+        else if (command.equals(COMMAND_LIST)) {
+            File directory = new File(HenPlus.getInstance().getConfigurationDirectoryInfo());
+            String[] scripts = directory.list(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".mvel");
+                }
+            });
+            for (String script : scripts) {
+                HenPlus.msg().println("  " + script);
             }
         }
 
@@ -158,7 +182,7 @@ public final class ScriptCommand extends AbstractCommand {
      */
     @Override
     public String getSynopsis(String cmd) {
-        return COMMAND_PROMPT + " " + " <script>";
+        return COMMAND_SCRIPT + " " + " <script>";
     }
 
     /*
@@ -176,7 +200,7 @@ public final class ScriptCommand extends AbstractCommand {
                 + "\t\t_henplus - the HenPlus instance\n"
                 + "\n"
                 + "\tYou can also execute scripts directly with\n"
-                + "\t\t" + COMMAND_PROMPT + " <script>;\n"
+                + "\t\t" + COMMAND_SCRIPT + " <script>;\n"
                 + "\twith the following predefined variables\n"
                 + "\t\t_session - the current SQL session\n"
                 + "\t\t_henplus - the HenPlus instance\n"
