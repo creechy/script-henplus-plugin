@@ -198,12 +198,17 @@ public final class ScriptCommand extends AbstractCommand {
                 + "\t\t_command - the full command that was executed\n"
                 + "\t\t_result  - the status of the last command\n"
                 + "\t\t_henplus - the HenPlus instance\n"
+                + "\t\t_dispatcher - the HenPlus command dispatcher\n"
+                + "\t\t_msg        - the HenPlus message printer\n"
                 + "\n"
                 + "\tYou can also execute scripts directly with\n"
                 + "\t\t" + COMMAND_SCRIPT + " <script>;\n"
                 + "\twith the following predefined variables\n"
-                + "\t\t_session - the current SQL session\n"
-                + "\t\t_henplus - the HenPlus instance\n"
+                + "\t\t_session    - the current SQL session\n"
+                + "\t\t_henplus    - the HenPlus instance\n"
+                + "\t\t_dispatcher - the HenPlus command dispatcher\n"
+                + "\t\t_msg        - the HenPlus message printer\n"
+                + "\t\t_args       - the arguments passed to the script\n"
                 + "\n";
     }
 }
