@@ -1,10 +1,10 @@
-##Script Henplus Plug-In##
+## Script Henplus Plug-In ##
 
 This plugin allows you to execute MVEL scripts in a couple of ways. First, manually with the `script` command. It also can be
 configured to execute a script after commands are executed. MVEL is a simple Expression Language which can be used as a
 dynamic scripting language.
 
-###Easy Setup###
+### Easy Setup ###
 
 Simply put `script-henplus-plugin.jar` and `mvel2-2.2.4.Final.jar` in to the CLASSPATH of `henplus`, generally in the `share/henplus` folder somewhere.
 
@@ -12,7 +12,7 @@ Start `henplus` and register the plugin. Use the `plug-in` command for this. Thi
 
      Hen*Plus> plug-in org.fakebelieve.henplus.plugins.script.ScriptCommand
 
-###Usage###
+### Usage ###
 
 When enabled, you can manually execute scripts with the `script` command.
 
